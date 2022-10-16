@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies_app/core/usecase/base_usecase.dart';
 import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/movies/domain/usecase/get_now_playing_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/get_popular_movies_usecase.dart';
@@ -33,7 +34,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
     // will use getNowPlayingMoviesUseCase() will called call() method by defoult .
     // becouse we use callable classes
-    final result = await getNowPlayingMoviesUseCase();
+    final result = await getNowPlayingMoviesUseCase(const NoParameters());
     
     result.fold(
       (l) => emit(
@@ -56,7 +57,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
     // will use getTopratedMoviesUseCase() will called call() method by defoult .
     // becouse we use callable classes
-    final result = await getTopratedMoviesUseCase();
+    final result = await getTopratedMoviesUseCase(const NoParameters());
 
     result.fold(
       (l) => emit(
@@ -79,7 +80,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
     // will use getPopularMoviesUseCase() will called call() method by defoult .
     // becouse we use callable classes
-    final result = await getPopularMoviesUseCase();
+    final result = await getPopularMoviesUseCase(const NoParameters());
     result.fold(
       (l) => emit(
         state.copyWith(

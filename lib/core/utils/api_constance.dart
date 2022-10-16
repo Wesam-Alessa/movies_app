@@ -7,4 +7,6 @@ class ApiConstance {
   static const String popularUrl = "/movie/popular";
   static const String topRatedUrl = "/movie/top_rated";
   static String imageUrl(String path) => "$baseImageUrl$path";
+  static String movieDetailsPath(int movieId) => "/movie/$movieId";
+
 }
