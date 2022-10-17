@@ -8,7 +8,7 @@ class MovieDetail extends Equatable {
   final String releaseDate;
   final int runtime;
   final String title;
-  final String voteAverage;
+  final double voteAverage;
   final List<Genres> genres;
   
   const MovieDetail({
