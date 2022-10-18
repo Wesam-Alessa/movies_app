@@ -9,5 +9,4 @@ class ApiConstance {
   static String imageUrl(String path) => "$baseImageUrl$path";
   static String movieDetailsPath(int movieId) => "/movie/$movieId";
   static String recommendationPath(int movieId) => "/movie/$movieId/recommendations";
-// https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key=<<api_key>>
 }
