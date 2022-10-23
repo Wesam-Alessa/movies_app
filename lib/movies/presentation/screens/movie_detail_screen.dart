@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +10,10 @@ import 'package:movies_app/core/utils/api_constance.dart';
 import 'package:movies_app/core/utils/app_string.dart';
 import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/movies/domain/entities/genres.dart';
+import 'package:movies_app/movies/presentation/components/youtube_player.dart';
 import 'package:movies_app/movies/presentation/controllers/movie_details_bloc/movie_details_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class MovieDetailScreen extends StatelessWidget {
   final int id;
@@ -21,6 +25,7 @@ class MovieDetailScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<MovieDetailsBloc>()
         ..add(GetMovieDetailsEvent(id))
+        ..add(GetMovieTrailerEvent(id))
         ..add(GetMovieRecommendationEvent(id)),
       lazy: false,
       child: const Scaffold(
@@ -30,10 +35,24 @@ class MovieDetailScreen extends StatelessWidget {
   }
 }
 
-class MovieDetailContent extends StatelessWidget {
+class MovieDetailContent extends StatefulWidget {
   const MovieDetailContent({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<MovieDetailContent> createState() => _MovieDetailContentState();
+}
+
+class _MovieDetailContentState extends State<MovieDetailContent> {
+  late YoutubePlayerController youtubePlayerController;
+ 
+  @override
+  void dispose() {
+    youtubePlayerController.webViewController.ignore();
+    youtubePlayerController.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,15 +90,17 @@ class MovieDetailContent extends StatelessWidget {
                         );
                       },
                       blendMode: BlendMode.dstIn,
-                      child:state.movieDetail!.backdropPath.isNotEmpty ? CachedNetworkImage(
-                        width: MediaQuery.of(context).size.width,
-                        imageUrl: ApiConstance.imageUrl(
-                            state.movieDetail!.backdropPath),
-                        fit: BoxFit.cover,
-                      ) : Image.asset(
-                                "assets/images/no-image.jpg",
-                                fit: BoxFit.fill,
-                              ),
+                      child: state.movieDetail!.backdropPath.isNotEmpty
+                          ? CachedNetworkImage(
+                              width: MediaQuery.of(context).size.width,
+                              imageUrl: ApiConstance.imageUrl(
+                                  state.movieDetail!.backdropPath),
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              "assets/images/no-image.jpg",
+                              fit: BoxFit.fill,
+                            ),
                     ),
                   ),
                 ),
@@ -185,6 +206,27 @@ class MovieDetailContent extends StatelessWidget {
                 ),
               ),
               SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 10.0),
+                sliver: SliverToBoxAdapter(
+                  child: FadeInUp(
+                    from: 20,
+                    duration: const Duration(milliseconds: 500),
+                    child: const Text(
+                      AppString.trailer,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 5.0),
+                sliver: _showTrailer(),
+              ),
+              SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
                 sliver: SliverToBoxAdapter(
                   child: FadeInUp(
@@ -253,6 +295,11 @@ class MovieDetailContent extends StatelessWidget {
               (context, index) {
                 return GestureDetector(
                   onTap: () {
+                    setState(() {
+                      youtubePlayerController.stopVideo();
+
+                      //youtubePlayerController.close();
+                    });
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -309,5 +356,49 @@ class MovieDetailContent extends StatelessWidget {
           );
       }
     });
+  }
+
+  Widget _showTrailer() {
+    return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
+        builder: (context, state) {
+      switch (state.movieState) {
+        case RequestState.loading:
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          );
+        case RequestState.loaded:
+          return SliverToBoxAdapter(
+            child: FadeInUp(
+                from: 20,
+                duration: const Duration(milliseconds: 500),
+                child: state.movieTrailer?.key == null ||
+                        state.movieTrailer!.key.isEmpty
+                    ? const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      )
+                    : Builder(builder: (context) {
+                        _setYoutubeControllerValue(state.movieTrailer!.key);
+                        return YoutubePlayerWidget(
+                          videoId: state.movieTrailer!.key,
+                          youtubePlayerController: youtubePlayerController,
+                        );
+                      })),
+          );
+        case RequestState.error:
+          return Center(
+            child: Text(state.recommendationMessage),
+          );
+      }
+    });
+  }
+
+  void _setYoutubeControllerValue(String videoId) {
+    youtubePlayerController = YoutubePlayerController(
+      params: const YoutubePlayerParams(
+        mute: false,
+        showControls: true,
+        loop: false,
+      ),
+    );
   }
 }

@@ -8,4 +8,5 @@ class AppString {
   static const nowPlaying = "Now Playing";
   static const popularMovies = "Popular Movies";
   static const topRatedMovies = "Top Rated Movies";
+  static const trailer = "Trailer";
 }

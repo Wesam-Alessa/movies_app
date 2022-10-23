@@ -7,6 +7,9 @@ class MovieDetailsState extends Equatable {
   final List<Recommendation> recommendation;
   final RequestState recommendationState;
   final String recommendationMessage;
+  final MovieTrailer? movieTrailer;
+  final RequestState trailerState;
+  final String movieTrailerMessage;
 
   const MovieDetailsState({
     this.movieDetail,
@@ -15,6 +18,9 @@ class MovieDetailsState extends Equatable {
     this.recommendation = const [],
     this.recommendationState = RequestState.loading,
     this.recommendationMessage = '',
+    this.movieTrailer,
+    this.trailerState = RequestState.loading,
+    this.movieTrailerMessage = '',
   });
 
   MovieDetailsState copyWith({
@@ -24,16 +30,21 @@ class MovieDetailsState extends Equatable {
     List<Recommendation>? recommendation,
     RequestState? recommendationState,
     String? recommendationMessage,
+    MovieTrailer? movieTrailer,
+    RequestState? trailerState,
+    String? movieTrailerMessage,
   }) {
     return MovieDetailsState(
-      movieState: movieState ?? this.movieState,
-      movieDetail: movieDetail ?? this.movieDetail,
-      movieDetailsMessage: movieDetailsMessage ?? this.movieDetailsMessage,
-      recommendation: recommendation ?? this.recommendation,
-      recommendationState: recommendationState ?? this.recommendationState,
-      recommendationMessage:
-          recommendationMessage ?? this.recommendationMessage,
-    );
+        movieState: movieState ?? this.movieState,
+        movieDetail: movieDetail ?? this.movieDetail,
+        movieDetailsMessage: movieDetailsMessage ?? this.movieDetailsMessage,
+        recommendation: recommendation ?? this.recommendation,
+        recommendationState: recommendationState ?? this.recommendationState,
+        recommendationMessage:
+            recommendationMessage ?? this.recommendationMessage,
+        movieTrailer: movieTrailer ?? this.movieTrailer,
+        trailerState: trailerState ?? this.trailerState,
+        movieTrailerMessage: movieTrailerMessage ?? this.movieTrailerMessage);
   }
 
   @override
@@ -44,5 +55,8 @@ class MovieDetailsState extends Equatable {
         recommendation,
         recommendationMessage,
         recommendationState,
+        movieTrailer,
+        trailerState,
+        movieTrailerMessage,
       ];
 }
