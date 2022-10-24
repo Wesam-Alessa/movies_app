@@ -7,8 +7,8 @@ import 'package:movies_app/movies/domain/entities/movie_detail.dart';
 import 'package:movies_app/movies/domain/entities/movie_trailer.dart';
 import 'package:movies_app/movies/domain/entities/recommendation.dart';
 import 'package:movies_app/movies/domain/repository/base_movies_repository.dart';
-import 'package:movies_app/movies/domain/usecase/get_movie_details_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_recommendation_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_movie_details_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_recommendation_usecase.dart';
 
 class MoviesRepository extends BaseMovieRepository {
   final BaseMovieRemoteDataSource baseMovieRemoteDataSource;

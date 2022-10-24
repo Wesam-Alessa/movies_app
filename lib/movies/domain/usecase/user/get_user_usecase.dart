@@ -11,18 +11,36 @@ class GetUserUsecase extends BaseUseCase<User, UserParameters> {
   GetUserUsecase(this.baseUserRepository);
 
   @override
-  Future<Either<Failure, User>> call(UserParameters parameters)async {
+  Future<Either<Failure, User>> call(UserParameters parameters) async {
     return await baseUserRepository.getUser(parameters);
   }
-  
 }
 
-
+// ignore: must_be_immutable
 class UserParameters extends Equatable {
-  final String userId;
+  String userId;
 
-  const UserParameters(this.userId);
-  
+  String get gerUserId => userId;
+
+  set setUserId(String userId) {
+    userId = userId;
+  }
+
+  final String name;
+  final String phone;
+  final String email;
+  final String password;
+
+  UserParameters(
+    {
+    this.userId ='',
+    this.name = '',
+    this.phone= '',
+    this.email= '',
+    this.password= '', 
+    }
+  );
+
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [userId,name,phone,password,email];
 }

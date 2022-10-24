@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +25,7 @@ class MoviesScreen extends StatelessWidget {
         ..add(GetTopRatedMoviesEvent());
       },
       child: Scaffold(
+
         backgroundColor: Colors.grey.shade900,
         body: SingleChildScrollView(
           key: const Key('movieScrollView'),
@@ -31,6 +33,7 @@ class MoviesScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const NowPlayingComponent(),
+              Center(child: IconButton(onPressed: () => FirebaseAuth.instance.signOut(),icon: Icon(Icons.logout),),),
               Container(
                 margin: const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 8.0),
                 child: Row(

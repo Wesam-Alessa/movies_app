@@ -5,13 +5,15 @@ import 'package:movies_app/movies/data/repository/movies_repository.dart';
 import 'package:movies_app/movies/data/repository/user_repository.dart';
 import 'package:movies_app/movies/domain/repository/base_movies_repository.dart';
 import 'package:movies_app/movies/domain/repository/base_user_repository.dart';
-import 'package:movies_app/movies/domain/usecase/get_movie_details_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_movie_trailer_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_now_playing_movies_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_popular_movies_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_recommendation_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_top_rated_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_movie_details_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_movie_trailer_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_now_playing_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_popular_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_recommendation_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_top_rated_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/user/get_user_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/user/login_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/user/signIn_anonymous_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/user/social_signin_usecase.dart';
 import 'package:movies_app/movies/presentation/controllers/bloc/user_bloc.dart';
 import 'package:movies_app/movies/presentation/controllers/movie_details_bloc/movie_details_bloc.dart';
@@ -30,7 +32,7 @@ class ServicesLocator {
     ///BLOC
     getIt.registerFactory(() => MoviesBloc(getIt(), getIt(), getIt()));
     getIt.registerFactory(() => MovieDetailsBloc(getIt(), getIt(), getIt()));
-    getIt.registerFactory(() => UserBloc(getIt(),getIt()));
+    getIt.registerFactory(() => UserBloc(getIt(),getIt(),getIt(),getIt()));
 
     ///USERCASE
     getIt.registerLazySingleton(() => GetNowPlayingMoviesUseCase(getIt()));
@@ -41,6 +43,9 @@ class ServicesLocator {
     getIt.registerLazySingleton(() => GetMovieTrailerUsecase(getIt()));
     getIt.registerLazySingleton(() => GetUserUsecase(getIt()));
     getIt.registerLazySingleton(() => GetSocialSigninUsecase(getIt()));
+    getIt.registerLazySingleton(() => GetSignInAnonymousUsecase(getIt()));
+    getIt.registerLazySingleton(() => LoginUsecase(getIt()));
+
 
 
     /// REPOSITORY

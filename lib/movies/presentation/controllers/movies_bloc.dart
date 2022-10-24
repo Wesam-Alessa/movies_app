@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/core/usecase/base_usecase.dart';
 import 'package:movies_app/core/utils/enums.dart';
-import 'package:movies_app/movies/domain/usecase/get_now_playing_movies_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_popular_movies_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_top_rated_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_now_playing_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_popular_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_top_rated_movies_usecase.dart';
 import 'package:movies_app/movies/presentation/controllers/movies_event.dart';
 import 'package:movies_app/movies/presentation/controllers/movies_state.dart';
 
@@ -54,7 +54,6 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   FutureOr<void> _getTopRatedMovies(
       GetTopRatedMoviesEvent event, Emitter<MoviesState> emit) async {
-
     // will use getTopratedMoviesUseCase() will called call() method by defoult .
     // becouse we use callable classes
     final result = await getTopratedMoviesUseCase(const NoParameters());

@@ -7,11 +7,12 @@ abstract class UserBlocEvent extends Equatable {
 }
 
 class GetUserEvent extends UserBlocEvent {
-  final String userId;
+  final String email;
+  final String password;
 
-  const GetUserEvent(this.userId);
+  const GetUserEvent(this.email, this.password);
   @override
-  List<Object> get props => [userId];
+  List<Object> get props => [email, password];
 }
 
 class SignInUserEvent extends UserBlocEvent {
@@ -20,3 +21,32 @@ class SignInUserEvent extends UserBlocEvent {
   List<Object> get props => [];
 }
 
+class SignInAnonymousEvent extends UserBlocEvent {
+
+  final String email;
+  final String password;
+  final String phone;
+  final String name;
+  const SignInAnonymousEvent(
+
+    this.email,
+    this.password,
+   this.phone,
+    this.name,
+  );
+  @override
+  List<Object> get props => [email,password,phone,name];
+}
+
+class LoginEvent extends UserBlocEvent {
+
+  final String email;
+  final String password;
+
+  const LoginEvent(
+    this.email,
+    this.password,
+  );
+  @override
+  List<Object> get props => [email,password];
+}

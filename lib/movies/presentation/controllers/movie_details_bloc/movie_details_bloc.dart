@@ -6,9 +6,9 @@ import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/movies/domain/entities/movie_detail.dart';
 import 'package:movies_app/movies/domain/entities/movie_trailer.dart';
 import 'package:movies_app/movies/domain/entities/recommendation.dart';
-import 'package:movies_app/movies/domain/usecase/get_movie_details_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_movie_trailer_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_recommendation_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_movie_details_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_movie_trailer_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_recommendation_usecase.dart';
 
 part 'movie_details_event.dart';
 part 'movie_details_state.dart';

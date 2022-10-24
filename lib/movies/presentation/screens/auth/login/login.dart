@@ -12,6 +12,9 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<UserBloc>(),
+      //..add(const GetUserEvent("","")),
+      // ..add(const SignInUserEvent())
+      // ..add(const SignInAnonymousEvent("","","","","",)),
       lazy: false,
       child: const LoginContent(),
     );
@@ -34,7 +37,6 @@ class _LoginContentState extends State<LoginContent> {
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserBlocState>(
       builder: (context, state) {
-        
         Size size = MediaQuery.of(context).size;
         return Scaffold(
           body: Background(
@@ -113,6 +115,15 @@ class _LoginContentState extends State<LoginContent> {
                           setState(() {
                             _key.currentState!.validate();
                           });
+                          if (_key.currentState!.validate()) {
+                            getIt<UserBloc>()
+                              .add(
+                                LoginEvent(emailController.text,
+                                  passwordController.text
+                                  )
+                                  );
+
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -148,7 +159,7 @@ class _LoginContentState extends State<LoginContent> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RegisterScreen()))
+                                  builder: (context) => const RegisterScreen()))
                         },
                         child: const Text(
                           "Don't Have an Account? Sign up",

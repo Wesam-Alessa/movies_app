@@ -4,8 +4,8 @@ import 'package:movies_app/movies/domain/entities/movie.dart';
 import 'package:movies_app/movies/domain/entities/movie_detail.dart';
 import 'package:movies_app/movies/domain/entities/movie_trailer.dart';
 import 'package:movies_app/movies/domain/entities/recommendation.dart';
-import 'package:movies_app/movies/domain/usecase/get_movie_details_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/get_recommendation_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_movie_details_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_recommendation_usecase.dart';
  
 abstract class BaseMovieRepository {
 
