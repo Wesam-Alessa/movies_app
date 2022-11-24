@@ -11,6 +11,7 @@ class MovieModel extends Movie {
     required super.overview,
     required super.voteAverage,
     required super.releaseDate,
+    //required super.url,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +27,10 @@ class MovieModel extends Movie {
   }
 
   factory MovieModel.fromMap(Map<String, dynamic> map) {
+    // String url = "sdf";
+
+
+
     return MovieModel(
       id: map['id'] as int,
       title: map['title'] as String,
@@ -34,6 +39,7 @@ class MovieModel extends Movie {
       overview: map['overview'] as String,
       voteAverage: map['vote_average'].toDouble(),
       releaseDate: map['release_date'] as String,
+      //url: url,
     );
   }
 
@@ -41,4 +47,8 @@ class MovieModel extends Movie {
 
   factory MovieModel.fromJson(String source) =>
       MovieModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  String generateUrl(String title, String date) {
+    return "";
+  }
 }

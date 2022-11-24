@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/core/services/services_locator.dart';
 import 'package:movies_app/core/utils/api_constance.dart';
 import 'package:movies_app/core/utils/app_string.dart';
+import 'package:movies_app/core/utils/dimensions.dart';
 import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/movies/domain/entities/genres.dart';
+import 'package:movies_app/movies/presentation/components/widgets/web_view_widget.dart';
 import 'package:movies_app/movies/presentation/components/youtube_player.dart';
 import 'package:movies_app/movies/presentation/controllers/movie_details_bloc/movie_details_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -46,7 +46,7 @@ class MovieDetailContent extends StatefulWidget {
 
 class _MovieDetailContentState extends State<MovieDetailContent> {
   late YoutubePlayerController youtubePlayerController;
- 
+
   @override
   void dispose() {
     youtubePlayerController.webViewController.ignore();
@@ -225,6 +225,46 @@ class _MovieDetailContentState extends State<MovieDetailContent> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 5.0),
                 sliver: _showTrailer(),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
+                sliver: SliverToBoxAdapter(
+                  child: FadeInUp(
+                    from: 20,
+                    duration: const Duration(milliseconds: 500),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          AppString.clickHereToWatch,
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        SizedBox(height: Dimensions.height10 / 2),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => WebViewWidget(
+                                      url: state.movieDetail!.url))),
+                          child: Text(
+                            state.movieDetail!.url,
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),

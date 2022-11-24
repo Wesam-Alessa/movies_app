@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/core/services/services_locator.dart';
+import 'package:movies_app/core/utils/enums.dart';
 import 'package:movies_app/movies/presentation/components/auth/background.dart';
 import 'package:movies_app/movies/presentation/controllers/bloc/user_bloc.dart';
 import 'package:movies_app/movies/presentation/screens/auth/register/register.dart';
@@ -12,9 +15,6 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<UserBloc>(),
-      //..add(const GetUserEvent("","")),
-      // ..add(const SignInUserEvent())
-      // ..add(const SignInAnonymousEvent("","","","","",)),
       lazy: false,
       child: const LoginContent(),
     );
@@ -35,7 +35,10 @@ class _LoginContentState extends State<LoginContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserBlocState>(
+    return BlocConsumer<UserBloc, UserBlocState>(
+      listener: (context, state) {},
+      buildWhen: (previous, current) =>
+          previous.userDataState != current.userDataState,
       builder: (context, state) {
         Size size = MediaQuery.of(context).size;
         return Scaffold(
@@ -116,13 +119,10 @@ class _LoginContentState extends State<LoginContent> {
                             _key.currentState!.validate();
                           });
                           if (_key.currentState!.validate()) {
-                            getIt<UserBloc>()
-                              .add(
-                                LoginEvent(emailController.text,
-                                  passwordController.text
-                                  )
-                                  );
-
+                            getIt<UserBloc>().add(LoginEvent(
+                                emailController.text,
+                                passwordController.text,
+                                context));
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -142,11 +142,17 @@ class _LoginContentState extends State<LoginContent> {
                                 Color.fromARGB(255, 255, 177, 41)
                               ])),
                           padding: const EdgeInsets.all(0),
-                          child: const Text(
-                            "LOGIN",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                          child: state.userDataState == RequestState.loading
+                              ? const Text(
+                                  "LOGIN",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -156,7 +162,7 @@ class _LoginContentState extends State<LoginContent> {
                           horizontal: 40, vertical: 10),
                       child: GestureDetector(
                         onTap: () => {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const RegisterScreen()))
@@ -173,18 +179,30 @@ class _LoginContentState extends State<LoginContent> {
                     const SizedBox(height: 40),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundImage:
-                              AssetImage('assets/images/google_logo.png'),
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            getIt<UserBloc>()
+                                .add(GoogleSignInUserEvent(context));
+                          },
+                          child: const CircleAvatar(
+                            radius: 25,
+                            backgroundImage:
+                                AssetImage('assets/images/google_logo.png'),
+                          ),
                         ),
-                        SizedBox(width: 25),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.white,
-                          backgroundImage:
-                              AssetImage('assets/images/facebook_logo.png'),
+                        const SizedBox(width: 25),
+                        GestureDetector(
+                          onTap: () {
+                            getIt<UserBloc>()
+                                .add(FacebookSignInUserEvent(context));
+                          },
+                          child: const CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white,
+                            backgroundImage:
+                                AssetImage('assets/images/facebook_logo.png'),
+                          ),
                         )
                       ],
                     )

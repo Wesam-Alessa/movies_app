@@ -1,12 +1,12 @@
+  
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies_app/core/services/services_locator.dart';
-import 'package:movies_app/movies/domain/usecase/user/signIn_anonymous_usecase.dart';
-
-import 'package:movies_app/movies/presentation/components/auth/background.dart';
+ import 'package:movies_app/movies/presentation/components/auth/background.dart';
 import 'package:movies_app/movies/presentation/controllers/bloc/user_bloc.dart';
 import 'package:movies_app/movies/presentation/screens/auth/login/login.dart';
 
+ 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
@@ -138,11 +138,13 @@ class _RegisterContentState extends State<RegisterContent> {
                             _key.currentState!.validate();
                           });
                           if (_key.currentState!.validate()) {
-                            getIt<UserBloc>().add(SignInAnonymousEvent(
-                                emailController.text,
-                                passwordController.text,
-                                phoneController.text,
-                                nameController.text));
+                            getIt<UserBloc>().add(SignUpAnonymousEvent(
+                              emailController.text,
+                              passwordController.text,
+                              phoneController.text,
+                              nameController.text,
+                              context,
+                            ));
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -178,7 +180,7 @@ class _RegisterContentState extends State<RegisterContent> {
                           horizontal: 40, vertical: 10),
                       child: GestureDetector(
                         onTap: () => {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const LoginScreen()))

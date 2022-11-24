@@ -45,5 +45,25 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<!-- TODO Replace this value: -->
+				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+				<string>461751389381952</string>
+				<string>com.googleusercontent.apps.3226290479-tlij9ouletlagprufefcmroaphp2cf2p</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>461751389381952</string>
+	<key>FacebookClientToken</key>
+	<string>c9f9a986f2ca031cfb60ef4221e26851</string>
+	<key>FacebookDisplayName</key>
+	<string>APP-NAME</string>
 </dict>
 </plist>

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:movies_app/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:movies_app/core/usecase/base_usecase.dart';
@@ -20,7 +21,7 @@ class GetUserUsecase extends BaseUseCase<User, UserParameters> {
 class UserParameters extends Equatable {
   String userId;
 
-  String get gerUserId => userId;
+  String get getUserId => userId;
 
   set setUserId(String userId) {
     userId = userId;
@@ -30,17 +31,16 @@ class UserParameters extends Equatable {
   final String phone;
   final String email;
   final String password;
-
-  UserParameters(
-    {
-    this.userId ='',
+  final BuildContext context;
+  UserParameters({
+    this.userId = '',
     this.name = '',
-    this.phone= '',
-    this.email= '',
-    this.password= '', 
-    }
-  );
+    this.phone = '',
+    this.email = '',
+    this.password = '',
+    required this.context,
+  });
 
   @override
-  List<Object?> get props => [userId,name,phone,password,email];
+  List<Object?> get props => [userId, name, phone, password, email,context];
 }

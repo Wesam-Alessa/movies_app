@@ -11,10 +11,12 @@ import 'package:movies_app/movies/domain/usecase/movies/get_now_playing_movies_u
 import 'package:movies_app/movies/domain/usecase/movies/get_popular_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/movies/get_recommendation_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/movies/get_top_rated_movies_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/user/facebook_signin_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/user/get_user_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/user/login_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/user/signIn_anonymous_usecase.dart';
-import 'package:movies_app/movies/domain/usecase/user/social_signin_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/user/signin_anonymous_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/user/google_signin_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/user/signout_usecase.dart';
 import 'package:movies_app/movies/presentation/controllers/bloc/user_bloc.dart';
 import 'package:movies_app/movies/presentation/controllers/movie_details_bloc/movie_details_bloc.dart';
 import 'package:movies_app/movies/presentation/controllers/movies_bloc.dart';
@@ -32,7 +34,8 @@ class ServicesLocator {
     ///BLOC
     getIt.registerFactory(() => MoviesBloc(getIt(), getIt(), getIt()));
     getIt.registerFactory(() => MovieDetailsBloc(getIt(), getIt(), getIt()));
-    getIt.registerFactory(() => UserBloc(getIt(),getIt(),getIt(),getIt()));
+    getIt.registerFactory(
+        () => UserBloc(getIt(), getIt(), getIt(), getIt(), getIt(), getIt()));
 
     ///USERCASE
     getIt.registerLazySingleton(() => GetNowPlayingMoviesUseCase(getIt()));
@@ -42,11 +45,11 @@ class ServicesLocator {
     getIt.registerLazySingleton(() => GetRecommendationUsecase(getIt()));
     getIt.registerLazySingleton(() => GetMovieTrailerUsecase(getIt()));
     getIt.registerLazySingleton(() => GetUserUsecase(getIt()));
-    getIt.registerLazySingleton(() => GetSocialSigninUsecase(getIt()));
-    getIt.registerLazySingleton(() => GetSignInAnonymousUsecase(getIt()));
-    getIt.registerLazySingleton(() => LoginUsecase(getIt()));
-
-
+    getIt.registerLazySingleton(() => GetGoogleSigninUsecase(getIt()));
+    getIt.registerLazySingleton(() => GetFacebookSigninUsecase(getIt()));
+    getIt.registerLazySingleton(() => GetSignUpAnonymousUsecase(getIt()));
+    getIt.registerLazySingleton(() => GetLoginUsecase(getIt()));
+    getIt.registerLazySingleton(() => GetSignOutUseCase(getIt()));
 
     /// REPOSITORY
     getIt.registerLazySingleton<BaseMovieRepository>(
@@ -62,7 +65,6 @@ class ServicesLocator {
     getIt.registerLazySingleton<BaseUserRemoteDataSource>(
         () => UserRemoteDataSource());
 
-    // YoutubePlayerController youtubePlayerController = YoutubePlayerController();
-    // getIt.registerLazySingleton(() => youtubePlayerController);
+
   }
 }

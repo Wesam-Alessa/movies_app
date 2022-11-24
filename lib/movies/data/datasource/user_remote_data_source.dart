@@ -1,7 +1,7 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:movies_app/core/error/exceptions.dart';
 import 'package:movies_app/core/network/error_message_model.dart';
@@ -11,8 +11,10 @@ import 'package:movies_app/movies/domain/usecase/user/get_user_usecase.dart';
 abstract class BaseUserRemoteDataSource {
   Future<UserModel?> getUser(UserParameters parameters);
   Future<UserModel> signInWithGoogle();
-  Future<UserModel> signInAnonymous(UserParameters parameters);
+  Future<UserModel> signInWithFacebook();
+  Future<UserModel> signUpAnonymous(UserParameters parameters);
   Future<UserModel> logIn(UserParameters parameters);
+  Future<UserModel> signOut();
 }
 
 class UserRemoteDataSource extends BaseUserRemoteDataSource {
@@ -22,7 +24,7 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
   UserModel? userModel;
 
   @override
-  Future<UserModel> signInAnonymous(UserParameters parameters) async {
+  Future<UserModel> signUpAnonymous(UserParameters parameters) async {
     final signinResult = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
             email: parameters.email, password: parameters.password);
@@ -33,31 +35,32 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
                 name: parameters.name,
                 email: parameters.email,
                 phone: parameters.phone,
-                id: signinResult.user!.uid)
+                id: signinResult.user!.uid,
+                picture: '')
             .toMap())
-        .then((value) {
-      userModel = UserModel(
-          name: parameters.name,
-          email: parameters.email,
-          phone: parameters.phone,
-          id: signinResult.user!.uid);
-    }).catchError((e) {
+        .then((value) async {})
+        .catchError((e) {
+      failedMessage(parameters.context, e.toString());
+
       throw ServerException(
           errorMessageModel: ErrorMessageModel(
               statusCode: 404, statusMessage: e.toString(), success: false));
     });
 
-    // await getUser(UserParameters(
-    //         userId: signinResult.user!.uid,
-    //         email: signinResult.user!.email!,
-    //         password: parameters.password))
-    //     .catchError((e) {
-    //   throw ServerException(
-    //       errorMessageModel: ErrorMessageModel(
-    //           statusCode: 404, statusMessage: e.toString(), success: false));
-    // });
+    await getUser(UserParameters(
+            userId: signinResult.user!.uid,
+            email: signinResult.user!.email!,
+            password: parameters.password,
+            context: parameters.context))
+        .catchError((e) {
+      failedMessage(parameters.context, e.toString());
 
-    if (userModel!.id.isNotEmpty) {
+      throw ServerException(
+          errorMessageModel: ErrorMessageModel(
+              statusCode: 404, statusMessage: e.toString(), success: false));
+    });
+
+    if (userModel != null) {
       return userModel!;
     } else {
       throw const ServerException(
@@ -70,20 +73,18 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
 
   @override
   Future<UserModel> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount? googleUser =
+        await GoogleSignIn(scopes: ['profile', 'email']).signIn();
 
-    // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
 
-    // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
+
     final result = await FirebaseAuth.instance.signInWithCredential(credential);
-    log("signInWithGoogle() :=  ${result.user.toString()}");
     return await socialSignIn(result);
   }
 
@@ -95,36 +96,27 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
     );
     // ignore: prefer_typing_uninitialized_variables
     var result;
-
-    final search =
-        await users.where('id', isEqualTo: userCredential.user!.uid).get();
-
-    if (search.docs.isEmpty) {
-      var res = await users
-          .add(UserModel(
-        name: userCredential.user!.displayName ?? "",
-        email: userCredential.user!.email ?? "",
-        id: userCredential.user!.uid,
-        phone: userCredential.user!.phoneNumber ?? "",
-      ).toMap())
-          .catchError((e) {
-        errorMessageModel = ErrorMessageModel(
-          statusCode: 404,
-          statusMessage: e.toString(),
-          success: false,
-        );
-      });
-      await firestore.doc(res.id).get().then((value) {
-        result = value;
-      });
-      log("signIn() 01:=  ${result.id.toString()}");
-    } else {
-      result = search.docs.first;
-      log("signIn() 02:=  ${result.data().toString()}");
-    }
-
-    if (result.id.isNotEmpty) {
-      return UserModel.fromjson(result.data() as Map<String, dynamic>);
+    await users
+        .doc(userCredential.user!.uid)
+        .set(UserModel(
+                name: userCredential.user!.displayName ?? "",
+                email: userCredential.user!.email ?? "",
+                id: userCredential.user!.uid,
+                phone: userCredential.user!.phoneNumber ?? "",
+                picture: userCredential.user!.photoURL ?? "")
+            .toMap())
+        .catchError((e) {
+      errorMessageModel = ErrorMessageModel(
+        statusCode: 404,
+        statusMessage: e.toString(),
+        success: false,
+      );
+    });
+    await users.doc(userCredential.user!.uid).get().then((value) {
+      result = value.data();
+    });
+    if (result != null) {
+      return UserModel.fromjson(result as Map<String, dynamic>);
     } else {
       throw ServerException(errorMessageModel: errorMessageModel);
     }
@@ -132,12 +124,12 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
 
   @override
   Future<UserModel?> getUser(UserParameters parameters) async {
-    log("getUser() := ${parameters.gerUserId}");
-    await users.doc(parameters.gerUserId).get().then((value) {
-      log("getUser() := ${value.data()}");
+    await users.doc(parameters.getUserId).get().then((value) {
       userModel = UserModel.fromjson(value.data()! as Map<String, dynamic>);
       return userModel;
     }).catchError((e) {
+      failedMessage(parameters.context, e.toString());
+
       throw ServerException(
           errorMessageModel: ErrorMessageModel(
               statusCode: 404, statusMessage: e.toString(), success: false));
@@ -147,19 +139,29 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
 
   @override
   Future<UserModel> logIn(UserParameters parameters) async {
-    final signinResult = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: parameters.email, password: parameters.password);
+    final signinResult = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: parameters.email, password: parameters.password)
+        .catchError((e) {
+      failedMessage(parameters.context, e.toString());
+      throw ServerException(
+          errorMessageModel: ErrorMessageModel(
+              statusCode: 404, statusMessage: e.toString(), success: false));
+    });
     await getUser(UserParameters(
             userId: signinResult.user!.uid,
             email: signinResult.user!.email!,
-            password: parameters.password))
+            password: parameters.password,
+            context: parameters.context))
         .catchError((e) {
+      failedMessage(parameters.context, e.toString());
+
       throw ServerException(
           errorMessageModel: ErrorMessageModel(
               statusCode: 404, statusMessage: e.toString(), success: false));
     });
 
-    if (userModel!.id.isNotEmpty) {
+    if (userModel != null) {
       return userModel!;
     } else {
       throw const ServerException(
@@ -168,5 +170,38 @@ class UserRemoteDataSource extends BaseUserRemoteDataSource {
               statusMessage: "somthing wrong",
               success: false));
     }
+  }
+
+  @override
+  Future<UserModel> signInWithFacebook() async {
+    final LoginResult loginResult =
+        await FacebookAuth.instance.login(permissions: [
+      "email",
+      "public_profile",
+    ], loginBehavior: LoginBehavior.webOnly);
+    if (loginResult.accessToken != null) {
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      final result = await FirebaseAuth.instance
+          .signInWithCredential(facebookAuthCredential);
+      return await socialSignIn(result);
+    } else {
+      return const UserModel(
+          name: '', email: '', id: "", phone: '', picture: '');
+    }
+  }
+
+  @override
+  Future<UserModel> signOut() async {
+    await FirebaseAuth.instance.signOut().then((value) {
+      userModel =
+          const UserModel(name: '', email: '', id: "", phone: '', picture: '');
+    });
+    return userModel!;
+  }
+
+  failedMessage(context, message) {
+    return ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 }

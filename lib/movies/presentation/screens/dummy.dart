@@ -14,6 +14,7 @@ MovieDetail movieDetailDummy = const MovieDetail(
   runtime: 87,
   title: "Minions: The Rise of Gru",
   voteAverage: 7.8,
+  url:''
 );
 
 List<Recommendation> recommendationDummy = [

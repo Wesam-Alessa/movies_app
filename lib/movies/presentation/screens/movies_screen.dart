@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,33 +6,43 @@ import 'package:movies_app/core/utils/app_string.dart';
 import 'package:movies_app/movies/presentation/components/main_screen/now_playing_component.dart';
 import 'package:movies_app/movies/presentation/components/main_screen/popular_component.dart';
 import 'package:movies_app/movies/presentation/components/main_screen/top_rated_component.dart';
+import 'package:movies_app/movies/presentation/components/widgets/profile_widget.dart';
 import 'package:movies_app/movies/presentation/controllers/movies_bloc.dart';
 import 'package:movies_app/movies/presentation/controllers/movies_event.dart';
 import 'package:movies_app/movies/presentation/screens/popular_screen.dart';
 import 'package:movies_app/movies/presentation/screens/top_radet_screen.dart';
 
-class MoviesScreen extends StatelessWidget {
+class MoviesScreen extends StatefulWidget {
   const MoviesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MoviesScreen> createState() => _MoviesScreenState();
+}
+
+class _MoviesScreenState extends State<MoviesScreen> {
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) {
         return getIt<MoviesBloc>()
-        ..add(GetNowPlayingMoviesEvent())
-        ..add(GetPopularMoviesEvent())
-        ..add(GetTopRatedMoviesEvent());
+          ..add(GetNowPlayingMoviesEvent())
+          ..add(GetPopularMoviesEvent())
+          ..add(GetTopRatedMoviesEvent());
       },
       child: Scaffold(
-
         backgroundColor: Colors.grey.shade900,
         body: SingleChildScrollView(
           key: const Key('movieScrollView'),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const NowPlayingComponent(),
-              Center(child: IconButton(onPressed: () => FirebaseAuth.instance.signOut(),icon: Icon(Icons.logout),),),
+              Stack(
+                children: const [
+                  NowPlayingComponent(),
+                  ProfileWidget(),
+                ],
+              ),
               Container(
                 margin: const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 8.0),
                 child: Row(
@@ -73,13 +82,7 @@ class MoviesScreen extends StatelessWidget {
               ),
               const PopularComponent(),
               Container(
-                margin: const EdgeInsets.fromLTRB(
-                  16.0,
-                  24.0,
-                  //16.0,
-                  0.0,
-                  8.0,
-                ),
+                margin: const EdgeInsets.fromLTRB(16.0, 24.0, 0.0, 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

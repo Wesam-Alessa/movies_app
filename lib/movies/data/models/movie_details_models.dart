@@ -11,10 +11,18 @@ class MovieDetailsModels extends MovieDetail {
     required super.title,
     required super.voteAverage,
     required super.genres,
+    required super.url
   });
 
-  factory MovieDetailsModels.fromjson(Map<String, dynamic> json) =>
-      MovieDetailsModels(
+  factory MovieDetailsModels.fromjson(Map<String, dynamic> json) {
+    String url = json['title'];
+    String date = json['release_date'];
+    url += " ";
+    url += date.split('-')[0];
+    url = url.replaceAll(" ", "-");
+    url = url.replaceAll(":", "");
+    url += "/";
+    return MovieDetailsModels(
         id: json["id"],
         backdropPath: json["backdrop_path"]??"",
         overview: json["overview"],
@@ -27,5 +35,7 @@ class MovieDetailsModels extends MovieDetail {
             (e) => GenresModels.fromjson(e),
           ),
         ),
+        url: url
       );
+  }
 }

@@ -7,46 +7,71 @@ abstract class UserBlocEvent extends Equatable {
 }
 
 class GetUserEvent extends UserBlocEvent {
-  final String email;
-  final String password;
-
-  const GetUserEvent(this.email, this.password);
-  @override
-  List<Object> get props => [email, password];
-}
-
-class SignInUserEvent extends UserBlocEvent {
-  const SignInUserEvent();
+  //final String id;
+  final BuildContext context;
+  const GetUserEvent({required this.context}
+      //this.id,
+      );
   @override
   List<Object> get props => [];
 }
 
-class SignInAnonymousEvent extends UserBlocEvent {
+class GoogleSignInUserEvent extends UserBlocEvent {
+  final BuildContext context;
+  const GoogleSignInUserEvent(this.context);
+  @override
+  List<Object> get props => [context];
+}
 
+class FacebookSignInUserEvent extends UserBlocEvent {
+  final BuildContext context;
+
+  const FacebookSignInUserEvent(this.context);
+  @override
+  List<Object> get props => [context];
+}
+
+class AppleSignInUserEvent extends UserBlocEvent {
+  final BuildContext context;
+
+  const AppleSignInUserEvent(this.context);
+  @override
+  List<Object> get props => [];
+}
+
+class TwitterSignInUserEvent extends UserBlocEvent {
+  final BuildContext context;
+
+  const TwitterSignInUserEvent(this.context);
+  @override
+  List<Object> get props => [];
+}
+
+class SignUpAnonymousEvent extends UserBlocEvent {
   final String email;
   final String password;
   final String phone;
   final String name;
-  const SignInAnonymousEvent(
+  final BuildContext context;
 
-    this.email,
-    this.password,
-   this.phone,
-    this.name,
-  );
+  const SignUpAnonymousEvent(
+      this.email, this.password, this.phone, this.name, this.context);
   @override
-  List<Object> get props => [email,password,phone,name];
+  List<Object> get props => [email, password, phone, name, context];
 }
 
 class LoginEvent extends UserBlocEvent {
-
   final String email;
   final String password;
-
-  const LoginEvent(
-    this.email,
-    this.password,
-  );
+  final BuildContext context;
+  const LoginEvent(this.email, this.password, this.context);
   @override
-  List<Object> get props => [email,password];
+  List<Object> get props => [email, password, context];
+}
+
+class SignOutEvent extends UserBlocEvent {
+  final BuildContext context;
+  const SignOutEvent(this.context);
+  @override
+  List<Object> get props => [context];
 }

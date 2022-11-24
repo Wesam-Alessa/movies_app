@@ -9,4 +9,7 @@ class AppString {
   static const popularMovies = "Popular Movies";
   static const topRatedMovies = "Top Rated Movies";
   static const trailer = "Trailer";
+  static const goToProfile = "Go to Profile";
+  static const clickHereToWatch = "Click on the link to watch the movie";
+  static const signOut = "Sign Out";
 }

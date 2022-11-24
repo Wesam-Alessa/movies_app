@@ -5,30 +5,32 @@ class UserBlocState extends Equatable {
   final RequestState userDataState;
   final String userDataMessage;
 
+
   const UserBlocState({
     this.userData,
     this.userDataState = RequestState.loading,
     this.userDataMessage = '',
+
   });
-  
+
   @override
   List<Object?> get props => [
-    userData,
-    userDataState,
-    userDataMessage,
-  ];
+        userData,
+        userDataState,
+        userDataMessage,
+      ];
 
   UserBlocState copyWith({
-     User? userData,
-     RequestState? userDataState,
+    User? userData,
+    RequestState? userDataState,
     String? userDataMessage,
 
   }) {
     return UserBlocState(
-      userData :userData ?? this.userData,
-      userDataState : userDataState ?? this.userDataState,
-      userDataMessage : userDataMessage ?? this.userDataMessage,
+      userData: userData ?? this.userData,
+      userDataState: userDataState ?? this.userDataState,
+      userDataMessage: userDataMessage ?? this.userDataMessage,
+
     );
   }
 }
-
