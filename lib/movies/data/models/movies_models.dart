@@ -27,19 +27,14 @@ class MovieModel extends Movie {
   }
 
   factory MovieModel.fromMap(Map<String, dynamic> map) {
-    // String url = "sdf";
-
-
-
     return MovieModel(
-      id: map['id'] as int,
-      title: map['title'] as String,
-      backdropPath: map['backdrop_path'] as String,
+      id: map['id'] ?? 0,
+      title: map['title'] ?? "",
+      backdropPath: map['backdrop_path'] ?? "" ,
       genreIds: List<int>.from(map['genre_ids'].map((e) => e)),
-      overview: map['overview'] as String,
-      voteAverage: map['vote_average'].toDouble(),
-      releaseDate: map['release_date'] as String,
-      //url: url,
+      overview: map['overview'] ?? "",
+      voteAverage: map['vote_average'].toDouble() ?? 0.0,
+      releaseDate: map['release_date'] ?? "",
     );
   }
 

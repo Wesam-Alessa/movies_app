@@ -21,3 +21,12 @@ class GetTopRatedMoviesEvent extends MoviesEvent {
   @override
   List<Object?> get props => throw UnimplementedError();
 }
+
+class GetSearchMoviesEvent extends MoviesEvent {
+  final String name;
+
+  const GetSearchMoviesEvent(this.name);
+    @override
+  List<Object> get props => [name];
+}
+

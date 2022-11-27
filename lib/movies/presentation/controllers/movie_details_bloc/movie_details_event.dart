@@ -30,3 +30,4 @@ class GetMovieTrailerEvent extends MovieDetailsEvent {
     @override
   List<Object> get props => [id];
 }
+

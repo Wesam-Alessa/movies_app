@@ -10,6 +10,7 @@ import 'package:movies_app/movies/domain/usecase/movies/get_movie_trailer_usecas
 import 'package:movies_app/movies/domain/usecase/movies/get_now_playing_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/movies/get_popular_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/movies/get_recommendation_usecase.dart';
+import 'package:movies_app/movies/domain/usecase/movies/get_search_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/movies/get_top_rated_movies_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/user/facebook_signin_usecase.dart';
 import 'package:movies_app/movies/domain/usecase/user/get_user_usecase.dart';
@@ -32,7 +33,7 @@ final getIt = GetIt.instance;
 class ServicesLocator {
   void init() {
     ///BLOC
-    getIt.registerFactory(() => MoviesBloc(getIt(), getIt(), getIt()));
+    getIt.registerFactory(() => MoviesBloc(getIt(), getIt(), getIt(), getIt()));
     getIt.registerFactory(() => MovieDetailsBloc(getIt(), getIt(), getIt()));
     getIt.registerFactory(
         () => UserBloc(getIt(), getIt(), getIt(), getIt(), getIt(), getIt()));
@@ -41,6 +42,7 @@ class ServicesLocator {
     getIt.registerLazySingleton(() => GetNowPlayingMoviesUseCase(getIt()));
     getIt.registerLazySingleton(() => GetPopularMoviesUseCase(getIt()));
     getIt.registerLazySingleton(() => GetTopratedMoviesUseCase(getIt()));
+    getIt.registerLazySingleton(() => GetSearchMoviesUsecase(getIt()));
     getIt.registerLazySingleton(() => GetMovieDetailsUsecase(getIt()));
     getIt.registerLazySingleton(() => GetRecommendationUsecase(getIt()));
     getIt.registerLazySingleton(() => GetMovieTrailerUsecase(getIt()));

@@ -6,10 +6,14 @@ class ApiConstance {
   static const String nowPlayingUrl = "/movie/now_playing";
   static const String popularUrl = "/movie/popular";
   static const String topRatedUrl = "/movie/top_rated";
+  static const String searchUrl = "/search/movie";
+  static const String queryUrl = "&query=";
+
   static String imageUrl(String path) => "$baseImageUrl$path";
   static String movieDetailsPath(int movieId) => "/movie/$movieId";
-  static String recommendationPath(int movieId) => "/movie/$movieId/recommendations";
+  static String recommendationPath(int movieId) =>
+      "/movie/$movieId/recommendations";
   static String trailerPath(int movieId) => "/movie/$movieId/videos";
 
-  // https://api.themoviedb.org/3/movie/924482/videos?api_key=1f5bf13a7ceb0d00bfaaf022dcb2cdfa
+  // https://api.themoviedb.org/3/search/movie?api_key=1f5bf13a7ceb0d00bfaaf022dcb2cdfa&query=%22black%22
 }

@@ -30,7 +30,7 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
     Emitter<MovieDetailsState> emit,
   ) async {
     final result =
-        await getMovieDetailsUsecase(MovieDetailsParameters(event.id));
+        await getMovieDetailsUsecase(MovieDetailsParameters(event.id,''));
     result.fold(
         (l) => emit(state.copyWith(
             movieState: RequestState.error, movieDetailsMessage: l.message)),
@@ -53,7 +53,7 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
   FutureOr<void> _getMovielTrailer(
       GetMovieTrailerEvent event, Emitter<MovieDetailsState> emit) async {
     final result =
-        await getMovieTrailerUsecase(MovieDetailsParameters(event.id));
+        await getMovieTrailerUsecase(MovieDetailsParameters(event.id,''));
     result.fold(
         (l) => emit(state.copyWith(
             trailerState: RequestState.error, movieTrailerMessage: l.message)),

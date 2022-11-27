@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/core/services/services_locator.dart';
 import 'package:movies_app/core/utils/app_string.dart';
+import 'package:movies_app/core/utils/dimensions.dart';
 import 'package:movies_app/movies/presentation/components/main_screen/now_playing_component.dart';
 import 'package:movies_app/movies/presentation/components/main_screen/popular_component.dart';
 import 'package:movies_app/movies/presentation/components/main_screen/top_rated_component.dart';
@@ -10,6 +11,7 @@ import 'package:movies_app/movies/presentation/components/widgets/profile_widget
 import 'package:movies_app/movies/presentation/controllers/movies_bloc.dart';
 import 'package:movies_app/movies/presentation/controllers/movies_event.dart';
 import 'package:movies_app/movies/presentation/screens/popular_screen.dart';
+import 'package:movies_app/movies/presentation/screens/search_screen.dart';
 import 'package:movies_app/movies/presentation/screens/top_radet_screen.dart';
 
 class MoviesScreen extends StatefulWidget {
@@ -20,7 +22,6 @@ class MoviesScreen extends StatefulWidget {
 }
 
 class _MoviesScreenState extends State<MoviesScreen> {
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -38,9 +39,24 @@ class _MoviesScreenState extends State<MoviesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(
-                children: const [
-                  NowPlayingComponent(),
-                  ProfileWidget(),
+                children: [
+                  const NowPlayingComponent(),
+                  const ProfileWidget(),
+                  Positioned(
+                    top: Dimensions.height10 * 4,
+                    right: Dimensions.width10 / 2,
+                    child: IconButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const SearchScreen())),
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: Dimensions.iconSize24,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Container(

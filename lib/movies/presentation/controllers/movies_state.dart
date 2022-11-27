@@ -20,6 +20,11 @@ class MoviesState extends Equatable {
   final RequestState topRatedState;
   final String topRatedMessage;
 
+  //search movies
+  final List<Movie> searchMovies;
+  final RequestState searchMoviesState;
+  final String searchMoviesMessage;
+
   const MoviesState({
     this.nowPlayingMovies = const [],
     this.nowPlayingState = RequestState.loading,
@@ -30,6 +35,9 @@ class MoviesState extends Equatable {
     this.topRatedMovies = const [],
     this.topRatedState = RequestState.loading,
     this.topRatedMessage = '',
+    this.searchMovies = const [],
+    this.searchMoviesState= RequestState.loading,
+    this.searchMoviesMessage = '',
   });
 
   @override
@@ -43,6 +51,9 @@ class MoviesState extends Equatable {
         topRatedMovies,
         topRatedState,
         topRatedMessage,
+        searchMovies,
+        searchMoviesState,
+        searchMoviesMessage,
       ];
 
   MoviesState copyWith({
@@ -55,6 +66,9 @@ class MoviesState extends Equatable {
     List<Movie>? topRatedMovies,
     RequestState? topRatedState,
     String? topRatedMessage,
+    List<Movie>? searchMovies,
+    RequestState? searchMoviesState,
+    String? searchMoviesMessage,
   }) {
     return MoviesState(
       nowPlayingMovies: nowPlayingMovies ?? this.nowPlayingMovies,
@@ -66,6 +80,13 @@ class MoviesState extends Equatable {
       topRatedMovies: topRatedMovies ?? this.topRatedMovies,
       topRatedState: topRatedState ?? this.topRatedState,
       topRatedMessage: topRatedMessage ?? this.topRatedMessage,
+      searchMovies: searchMovies ?? this.searchMovies,
+      searchMoviesState: searchMoviesState ?? this.searchMoviesState,
+      searchMoviesMessage: searchMoviesMessage ?? this.searchMoviesMessage,
     );
   }
 }
+// abstract class SearchState{}
+// class GetLoadingSearchState extends SearchState{}
+// class GetUnLoadingSearchState extends SearchState{}
+// class GetErrorSearchState extends SearchState{}

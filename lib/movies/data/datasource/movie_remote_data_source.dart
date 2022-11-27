@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:movies_app/core/error/exceptions.dart';
 import 'package:movies_app/core/network/error_message_model.dart';
@@ -18,10 +17,10 @@ abstract class BaseMovieRemoteDataSource {
   Future<MovieTrailerModels> getMovieTrailer(MovieDetailsParameters parameters);
   Future<List<RecommendationModel>> getRecommendation(
       RecommendationParameters parameters);
+  Future<List<MovieModel>> getSearchMovies(MovieDetailsParameters parameters);
 }
 
 class MovieRemoteDataSource extends BaseMovieRemoteDataSource {
-  
   @override
   Future<List<MovieModel>> getNowPlayingMovies() async {
     final Response response = await Dio().get(ApiConstance.baseUrl +
@@ -124,7 +123,7 @@ class MovieRemoteDataSource extends BaseMovieRemoteDataSource {
           ApiConstance.apiKey,
     );
     if (response.statusCode == 200) {
-      Map<String,dynamic> obj = {};
+      Map<String, dynamic> obj = {};
       if (response.data["results"].length > 0) {
         response.data["results"].forEach((e) {
           if (e['type'] == "Trailer") {
@@ -133,8 +132,33 @@ class MovieRemoteDataSource extends BaseMovieRemoteDataSource {
         });
       } else {
         obj = response.data["results"][0];
-      } 
+      }
       return MovieTrailerModels.fromjson(obj);
+    } else {
+      throw ServerException(
+          errorMessageModel: ErrorMessageModel.fromJson(response.data));
+    }
+  }
+
+  @override
+  Future<List<MovieModel>> getSearchMovies(
+      MovieDetailsParameters parameters) async {
+    final Response response = await Dio().get(
+      ApiConstance.baseUrl +
+          ApiConstance.searchUrl +
+          ApiConstance.apiKeyUrl +
+          ApiConstance.apiKey +
+          ApiConstance.queryUrl +
+          parameters.search
+      // "https://api.themoviedb.org/3/search/movie?api_key=1f5bf13a7ceb0d00bfaaf022dcb2cdfa&query=${parameters.search}"
+      ,
+    );
+    if (response.statusCode == 200) {
+      return List<MovieModel>.from(
+        (response.data['results'] as List).map(
+          (e) => MovieModel.fromMap(e),
+        ),
+      );
     } else {
       throw ServerException(
           errorMessageModel: ErrorMessageModel.fromJson(response.data));
